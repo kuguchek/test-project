@@ -1,0 +1,9 @@
+# ninja log v5
+0	311	1636569347	test/9f86d08@@testcase@exe/.._source_ConcreteFactory1.cpp.o	c0b600882292bbb4
+312	623	1636569347	test/9f86d08@@testcase@exe/.._source_ConcreteFactory2.cpp.o	a69a35152fa2d61b
+623	986	1636569348	test/9f86d08@@testcase@exe/.._source_ConcreteProductA1.cpp.o	892e23ac797804ba
+987	1284	1636569348	test/9f86d08@@testcase@exe/.._source_ConcreteProductA2.cpp.o	b8a70c12f1581728
+0	1373	1636569348	test/9f86d08@@testcase@exe/ConcreteProductA1Test.cpp.o	54096d55d06fbe77
+1284	1625	1636569348	test/9f86d08@@testcase@exe/.._source_ConcreteProductB1.cpp.o	3270a0015c4d37f6
+1374	1668	1636569348	test/9f86d08@@testcase@exe/.._source_ConcreteProductB2.cpp.o	1aa0e3c74d63fad9
+1668	1820	1636569349	test/testcase	db8b13eef09c7a29

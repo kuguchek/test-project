@@ -1,0 +1,9 @@
+# ninja log v5
+0	303	1636566179	example_task@exe/source_ConcreteFactory1.cpp.o	2eced657963fd1c9
+0	307	1636566179	example_task@exe/source_ConcreteFactory2.cpp.o	67705fefb62ad67e
+307	589	1636566179	example_task@exe/source_ConcreteProductA2.cpp.o	bf230b79474352c9
+304	590	1636566179	example_task@exe/source_ConcreteProductA1.cpp.o	dd0ac1d71680ca80
+589	874	1636566179	example_task@exe/source_ConcreteProductB1.cpp.o	1db714ec3b7e18ee
+590	875	1636566179	example_task@exe/source_ConcreteProductB2.cpp.o	eb2d99b89ae5aa5e
+874	1074	1636566179	example_task@exe/main.cpp.o	ea0a245b06be0bd0
+1074	1138	1636566179	example_task	d33ed0f4041dfd51

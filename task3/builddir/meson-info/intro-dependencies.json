@@ -1,0 +1,1 @@
+[{"name": "gtest", "version": "unknown", "compile_args": [], "link_args": ["-lgtest", "-lgtest_main"]}]

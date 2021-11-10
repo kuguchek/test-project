@@ -1,0 +1,37 @@
+[
+  {
+    "directory": "/home/valeria/testproject/task1/abstract_factory/builddir",
+    "command": "c++ -Iexample_task@exe -I. -I.. -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -MD -MQ 'example_task@exe/source_ConcreteFactory1.cpp.o' -MF 'example_task@exe/source_ConcreteFactory1.cpp.o.d' -o 'example_task@exe/source_ConcreteFactory1.cpp.o' -c ../source/ConcreteFactory1.cpp",
+    "file": "../source/ConcreteFactory1.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task1/abstract_factory/builddir",
+    "command": "c++ -Iexample_task@exe -I. -I.. -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -MD -MQ 'example_task@exe/source_ConcreteFactory2.cpp.o' -MF 'example_task@exe/source_ConcreteFactory2.cpp.o.d' -o 'example_task@exe/source_ConcreteFactory2.cpp.o' -c ../source/ConcreteFactory2.cpp",
+    "file": "../source/ConcreteFactory2.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task1/abstract_factory/builddir",
+    "command": "c++ -Iexample_task@exe -I. -I.. -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -MD -MQ 'example_task@exe/source_ConcreteProductA1.cpp.o' -MF 'example_task@exe/source_ConcreteProductA1.cpp.o.d' -o 'example_task@exe/source_ConcreteProductA1.cpp.o' -c ../source/ConcreteProductA1.cpp",
+    "file": "../source/ConcreteProductA1.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task1/abstract_factory/builddir",
+    "command": "c++ -Iexample_task@exe -I. -I.. -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -MD -MQ 'example_task@exe/source_ConcreteProductA2.cpp.o' -MF 'example_task@exe/source_ConcreteProductA2.cpp.o.d' -o 'example_task@exe/source_ConcreteProductA2.cpp.o' -c ../source/ConcreteProductA2.cpp",
+    "file": "../source/ConcreteProductA2.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task1/abstract_factory/builddir",
+    "command": "c++ -Iexample_task@exe -I. -I.. -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -MD -MQ 'example_task@exe/source_ConcreteProductB1.cpp.o' -MF 'example_task@exe/source_ConcreteProductB1.cpp.o.d' -o 'example_task@exe/source_ConcreteProductB1.cpp.o' -c ../source/ConcreteProductB1.cpp",
+    "file": "../source/ConcreteProductB1.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task1/abstract_factory/builddir",
+    "command": "c++ -Iexample_task@exe -I. -I.. -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -MD -MQ 'example_task@exe/source_ConcreteProductB2.cpp.o' -MF 'example_task@exe/source_ConcreteProductB2.cpp.o.d' -o 'example_task@exe/source_ConcreteProductB2.cpp.o' -c ../source/ConcreteProductB2.cpp",
+    "file": "../source/ConcreteProductB2.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task1/abstract_factory/builddir",
+    "command": "c++ -Iexample_task@exe -I. -I.. -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -MD -MQ 'example_task@exe/main.cpp.o' -MF 'example_task@exe/main.cpp.o.d' -o 'example_task@exe/main.cpp.o' -c ../main.cpp",
+    "file": "../main.cpp"
+  }
+]

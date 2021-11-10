@@ -1,0 +1,10 @@
+# ninja log v5
+0	341	1636568735	source/41cf679@@slib@sta/ConcreteFactory1.cpp.o	7d5f6a0108a2384b
+0	346	1636568735	source/41cf679@@slib@sta/ConcreteFactory2.cpp.o	7518016535880a0d
+344	693	1636568736	source/41cf679@@slib@sta/ConcreteProductA1.cpp.o	95b63f0eefc78366
+346	713	1636568736	source/41cf679@@slib@sta/ConcreteProductA2.cpp.o	9069a2d200e521b0
+693	1004	1636568736	source/41cf679@@slib@sta/ConcreteProductB1.cpp.o	8f88e0a4ee9cce7a
+713	1039	1636568736	source/41cf679@@slib@sta/ConcreteProductB2.cpp.o	7b90080bba199807
+1039	1070	1636568736	source/libslib.a	7b0b4893f4ab0cb9
+1004	1268	1636568736	example_task@exe/main.cpp.o	ea0a245b06be0bd0
+1268	1389	1636568736	example_task	86608d7818f3f9ea

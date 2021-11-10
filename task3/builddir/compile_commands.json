@@ -1,0 +1,37 @@
+[
+  {
+    "directory": "/home/valeria/testproject/task3/builddir",
+    "command": "c++ -Itest/9f86d08@@testcase@exe -Itest -I../test -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -pthread -MD -MQ 'test/9f86d08@@testcase@exe/ConcreteProductA1Test.cpp.o' -MF 'test/9f86d08@@testcase@exe/ConcreteProductA1Test.cpp.o.d' -o 'test/9f86d08@@testcase@exe/ConcreteProductA1Test.cpp.o' -c ../test/ConcreteProductA1Test.cpp",
+    "file": "../test/ConcreteProductA1Test.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task3/builddir",
+    "command": "c++ -Itest/9f86d08@@testcase@exe -Itest -I../test -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -pthread -MD -MQ 'test/9f86d08@@testcase@exe/.._source_ConcreteFactory1.cpp.o' -MF 'test/9f86d08@@testcase@exe/.._source_ConcreteFactory1.cpp.o.d' -o 'test/9f86d08@@testcase@exe/.._source_ConcreteFactory1.cpp.o' -c ../source/ConcreteFactory1.cpp",
+    "file": "../source/ConcreteFactory1.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task3/builddir",
+    "command": "c++ -Itest/9f86d08@@testcase@exe -Itest -I../test -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -pthread -MD -MQ 'test/9f86d08@@testcase@exe/.._source_ConcreteFactory2.cpp.o' -MF 'test/9f86d08@@testcase@exe/.._source_ConcreteFactory2.cpp.o.d' -o 'test/9f86d08@@testcase@exe/.._source_ConcreteFactory2.cpp.o' -c ../source/ConcreteFactory2.cpp",
+    "file": "../source/ConcreteFactory2.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task3/builddir",
+    "command": "c++ -Itest/9f86d08@@testcase@exe -Itest -I../test -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -pthread -MD -MQ 'test/9f86d08@@testcase@exe/.._source_ConcreteProductA1.cpp.o' -MF 'test/9f86d08@@testcase@exe/.._source_ConcreteProductA1.cpp.o.d' -o 'test/9f86d08@@testcase@exe/.._source_ConcreteProductA1.cpp.o' -c ../source/ConcreteProductA1.cpp",
+    "file": "../source/ConcreteProductA1.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task3/builddir",
+    "command": "c++ -Itest/9f86d08@@testcase@exe -Itest -I../test -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -pthread -MD -MQ 'test/9f86d08@@testcase@exe/.._source_ConcreteProductA2.cpp.o' -MF 'test/9f86d08@@testcase@exe/.._source_ConcreteProductA2.cpp.o.d' -o 'test/9f86d08@@testcase@exe/.._source_ConcreteProductA2.cpp.o' -c ../source/ConcreteProductA2.cpp",
+    "file": "../source/ConcreteProductA2.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task3/builddir",
+    "command": "c++ -Itest/9f86d08@@testcase@exe -Itest -I../test -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -pthread -MD -MQ 'test/9f86d08@@testcase@exe/.._source_ConcreteProductB1.cpp.o' -MF 'test/9f86d08@@testcase@exe/.._source_ConcreteProductB1.cpp.o.d' -o 'test/9f86d08@@testcase@exe/.._source_ConcreteProductB1.cpp.o' -c ../source/ConcreteProductB1.cpp",
+    "file": "../source/ConcreteProductB1.cpp"
+  },
+  {
+    "directory": "/home/valeria/testproject/task3/builddir",
+    "command": "c++ -Itest/9f86d08@@testcase@exe -Itest -I../test -I../include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -pthread -MD -MQ 'test/9f86d08@@testcase@exe/.._source_ConcreteProductB2.cpp.o' -MF 'test/9f86d08@@testcase@exe/.._source_ConcreteProductB2.cpp.o.d' -o 'test/9f86d08@@testcase@exe/.._source_ConcreteProductB2.cpp.o' -c ../source/ConcreteProductB2.cpp",
+    "file": "../source/ConcreteProductB2.cpp"
+  }
+]

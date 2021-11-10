@@ -1,0 +1,1 @@
+[{"cmd": ["/home/valeria/testproject/task3/builddir/test/testcase"], "env": {}, "name": "ConcreteProductTest", "workdir": null, "timeout": 30, "suite": ["example"], "is_parallel": true, "priority": 0, "protocol": "exitcode"}]
