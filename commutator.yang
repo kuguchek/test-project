@@ -1,0 +1,25 @@
+module commutator {
+	container subscribers {
+		list subscriber {
+	    	key "number";
+	    	leaf number {
+				type uint32;
+			}
+	    	leaf userName {
+				type string;
+				config false;
+	 		}
+			leaf incomingNumber {
+				type uint32;
+	 		}
+			leaf state {
+				type unumeration {
+					enum idle;
+					enum busy;
+					enum active;
+				}
+				default "idle";
+			}
+		}
+	}
+}
