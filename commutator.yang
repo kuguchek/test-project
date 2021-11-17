@@ -1,19 +1,22 @@
-module commutator {
+module mobilenetwork {
+	namespace "mobilenetwork";
+	prefix "network";
+
 	container subscribers {
 		list subscriber {
 	    	key "number";
 	    	leaf number {
-				type uint32;
+				type string;
 			}
 	    	leaf userName {
 				type string;
 				config false;
 	 		}
 			leaf incomingNumber {
-				type uint32;
+				type string;
 	 		}
 			leaf state {
-				type unumeration {
+				type enumeration {
 					enum idle;
 					enum busy;
 					enum active;
