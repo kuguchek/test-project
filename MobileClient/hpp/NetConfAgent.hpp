@@ -1,14 +1,15 @@
-#pragma once
+# ifndef NETCONFAGENT_HPP
+# define NETCONFAGENT_HPP
 #include <sysrepo-cpp/Session.hpp>
 #include <sysrepo-cpp/Connection.hpp>
 #include <iostream>
 
 class NetConfAgent {
     public:
-        bool subscribeForModelChanges();
+        void init();
+        void subscribeForModelChanges();
     private:
-        sysrepo::Connection con;
-        sysrepo::Session sess;
-        sysrepo::Subscription sub;
-
+        std::unique_ptr<sysrepo::Connection> con;
 };
+
+#endif
