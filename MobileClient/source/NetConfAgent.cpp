@@ -1,20 +1,25 @@
-#include "../hpp/NetConfAgent.hpp"
+#include "NetConfAgent.hpp"
 
-void NetConfAgent::init() {
-    con = std::make_unique<sysrepo::Connection>();
+NetConfAgent::NetConfAgent() : con(), ses(con.sessionStart()) {
+
 }
 
-void NetConfAgent::subscribeForModelChanges() {
-    init();
-    auto sess = con->sessionStart();
-    sess.copyConfig(sysrepo::Datastore::Startup, "mobilenetwork");
-    int32_t called = 0;
+bool NetConfAgent::fetchData(std::string & path, std::string & str) {
+    const char *cstr = path.c_str();
+    auto data = ses.getData(cstr);
+    if (!data)
+        return false;
+    //str = std::string{data->path()}; -> /mobilenetwork:subscribers
+    str = data->findPath(cstr).value().asTerm().valueStr();
+    std::cout << str << std::endl;
+    return true;
+}
 
-    sysrepo::ModuleChangeCb changeCb = [&called] (auto, auto, auto, auto, auto, auto) -> sysrepo::ErrorCode {
-            called++;
-            //std::cout << "called: " << called << std::endl;
+void NetConfAgent::subscribeForModelChanges() { //bool?
+    ses.copyConfig(sysrepo::Datastore::Running, "mobilenetwork");
+    sysrepo::ModuleChangeCb changeCb = [] (sysrepo::Session, auto, auto, auto, auto, auto) -> sysrepo::ErrorCode {
+
             return sysrepo::ErrorCode::Ok;
     };
-    auto sub = sess.onModuleChange("mobilenetwork", changeCb);
-    //return true;
+    sub = ses.onModuleChange("mobilenetwork", changeCb);
 }

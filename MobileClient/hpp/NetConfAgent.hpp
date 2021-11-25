@@ -3,13 +3,17 @@
 #include <sysrepo-cpp/Session.hpp>
 #include <sysrepo-cpp/Connection.hpp>
 #include <iostream>
+#include <optional>
 
 class NetConfAgent {
     public:
-        void init();
+        NetConfAgent();
         void subscribeForModelChanges();
+        bool fetchData(std::string & path, std::string & str);
     private:
-        std::unique_ptr<sysrepo::Connection> con;
+        sysrepo::Connection con;
+        sysrepo::Session ses;
+        std::optional<sysrepo::Subscription> sub;
 };
 
 #endif
