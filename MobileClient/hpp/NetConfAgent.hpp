@@ -10,10 +10,12 @@ class NetConfAgent {
         NetConfAgent();
         void subscribeForModelChanges();
         bool fetchData(std::string & path, std::string & str);
+        void changeData(std::string & path, std::string & value);
+        void subscribeOnOper();
     private:
-        sysrepo::Connection con;
-        sysrepo::Session ses;
-        std::optional<sysrepo::Subscription> sub;
+        sysrepo::Connection _con;
+        sysrepo::Session _ses;
+        std::optional<sysrepo::Subscription> _sub;
 };
 
 #endif

@@ -35,10 +35,14 @@ void regect() {
 
 int main() {
     NetConfAgent nca;
-    nca.subscribeForModelChanges();
-    std::string str, str2;
-    str = "/mobilenetwork:subscribers/subscriber[number='001']/number"; //fetchData() tests
-    nca.fetchData(str, str2);
+    //nca.subscribeForModelChanges();
+    //std::string str, str2;
+    //str = "/mobilenetwork:subscribers/subscriber[number='001']/number"; //fetchData() tests
+    //nca.fetchData(str, str2);
+    //str = "/mobilenetwork:subscribers/subscriber[number='001']/incomingNumber";
+    //str2 = "000";
+    //nca.changeData(str, str2);
+    nca.subscribeOnOper();
     std::string line;
     std::cout << "options: register 'number', unregister, setName 'name'," 
      << " call 'number', callEnd, answer, regect, exit" << std::endl;
