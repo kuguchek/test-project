@@ -8,10 +8,11 @@
 class NetConfAgent {
     public:
         NetConfAgent();
-        void subscribeForModelChanges();
+        void subscribeForModelChanges(std::string & path);
         bool fetchData(std::string & path, std::string & str);
         void changeData(std::string & path, std::string & value);
-        void subscribeOnOper();
+        void registerOperData();
+        const char *moduleName = "mobilenetwork";
     private:
         sysrepo::Connection _con;
         sysrepo::Session _ses;

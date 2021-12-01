@@ -1,4 +1,4 @@
-src = ['source/NetConfAgent.cpp']
+src = ['source/NetConfAgent.cpp', 'source/MobileClient.cpp']
 
 inc = include_directories('hpp')
 

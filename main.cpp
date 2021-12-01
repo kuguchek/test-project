@@ -2,8 +2,13 @@
 #include <string>
 #include <sstream>
 #include "NetConfAgent.hpp"
+#include "MobileClient.hpp"
+
+MobileClient mc;
 
 bool Register(std::string number) {
+    if (!(mc.Register(number)))
+        return false;
     std::cout << number << " registred succesfully!" << std::endl;
     return true;
 }
@@ -14,7 +19,7 @@ bool unregister() {
 }
 
 void setName(std::string name) {
-    std::cout << "name: " << name << " added!" << std::endl;
+    mc.setName(name);
 }
 
 void call(std::string incomingNumber) {
@@ -34,15 +39,6 @@ void regect() {
 }
 
 int main() {
-    NetConfAgent nca;
-    //nca.subscribeForModelChanges();
-    //std::string str, str2;
-    //str = "/mobilenetwork:subscribers/subscriber[number='001']/number"; //fetchData() tests
-    //nca.fetchData(str, str2);
-    //str = "/mobilenetwork:subscribers/subscriber[number='001']/incomingNumber";
-    //str2 = "000";
-    //nca.changeData(str, str2);
-    nca.subscribeOnOper();
     std::string line;
     std::cout << "options: register 'number', unregister, setName 'name'," 
      << " call 'number', callEnd, answer, regect, exit" << std::endl;
@@ -52,8 +48,12 @@ int main() {
         if ((pos = line.find(' ')) != std::string::npos) { //while more than one word - "register", "setName", "call" 
             std::string word1 = line.substr(0, pos);
             std::string word2 = line.substr(pos + 1);
-            if ((pos = word2.find(' ')) != std::string::npos) //if more than 2 words - error
+            size_t pos2;
+            if ((pos2 = word2.find(' ')) != std::string::npos) //if more than 2 words - error 
+            {
                 std::cout << "wrong format: 'command' 'arg' / 'commmand'" << std::endl;
+                continue;
+            }
             if (word1 == "register")
                 Register(word2);
             else if (word1 == "setName")
