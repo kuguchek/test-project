@@ -4,48 +4,43 @@
 #include "NetConfAgent.hpp"
 #include "MobileClient.hpp"
 
-MobileClient mc;
-
-bool Register(std::string number) {
-    if (!(mc.Register(number)))
-        return false;
-    std::cout << number << " registred succesfully!" << std::endl;
-    return true;
-}
-
 bool unregister() {
     std::cout << "unregistred!" << std::endl;
     return true;
-}
-
-void setName(std::string name) {
-    mc.setName(name);
-}
-
-void call(std::string incomingNumber) {
-    std::cout << "calling " << incomingNumber << std::endl;
 }
 
 void callEnd() {
     std::cout << "end call?" << std::endl;
 }
 
-void answer() {
-    std::cout << "answer?" << std::endl;
-}
-
 void regect() {
     std::cout << "regect?" << std::endl;
+}
+
+void twoWordCommands(MobileClient & mc, std::string const & command, std::string & value) {
+    if (command == "register") {
+        if (mc.Register(value))
+            std::cout << "> number " << value << " registred succesfully!" << std::endl;
+    }
+    else if (command == "setName")
+        mc.setName(value);
+    else if (command == "call") {
+        if(!mc.call(value))
+            std::cout << "> subscriber is unavailable for some reasons! can't call! " << value << std::endl;
+    }
+    else
+        std::cout << "wrong command!" << std::endl;
 }
 
 int main() {
     std::string line;
     std::cout << "options: register 'number', unregister, setName 'name'," 
      << " call 'number', callEnd, answer, regect, exit" << std::endl;
+    MobileClient mc;
     while (1) {
         getline(std::cin, line);
         size_t pos;
-        if ((pos = line.find(' ')) != std::string::npos) { //while more than one word - "register", "setName", "call" 
+        if ((pos = line.find(' ')) != std::string::npos) {
             std::string word1 = line.substr(0, pos);
             std::string word2 = line.substr(pos + 1);
             size_t pos2;
@@ -54,14 +49,7 @@ int main() {
                 std::cout << "wrong format: 'command' 'arg' / 'commmand'" << std::endl;
                 continue;
             }
-            if (word1 == "register")
-                Register(word2);
-            else if (word1 == "setName")
-                setName(word2);
-            else if (word1 == "call")
-                call(word2);
-            else
-                std::cout << "wrong command!" << std::endl;
+            twoWordCommands(mc, word1, word2);
         }
         else {
             if (line == "register" || line == "setName" || line == "call")
@@ -71,7 +59,7 @@ int main() {
             else if (line == "callEnd")
                 callEnd();
             else if (line == "answer")
-                answer();
+                mc.answer();
             else if (line == "regect")
                 regect();
             else if (line == "exit")

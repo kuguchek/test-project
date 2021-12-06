@@ -1,4 +1,6 @@
 #include "NetConfAgent.hpp"
+#include "MobileClient.hpp"
+#include "Constants.hpp"
 
 NetConfAgent::NetConfAgent() : _con(), _ses(_con.sessionStart()) { }
 
@@ -10,18 +12,18 @@ void NetConfAgent::registerOperData() {
             ret = sysrepo::ErrorCode::Ok;
             return ret;
     };
-    _sub = _ses.onOperGetItems(moduleName, operGetCb, "/mobilenetwork:*");
+    _sub = _ses.onOperGetItems(_moduleName, operGetCb, "/mobilenetwork:*");
     //_ses.switchDatastore(sysrepo::Datastore::Operational);
 }
 
-void NetConfAgent::changeData(std::string & path, std::string & value) {
+void NetConfAgent::changeData(std::string const & path, std::string const & value) {
     const char *cpath = path.c_str();
     const char *cval = value.c_str();
     _ses.setItem(cpath, cval);
     _ses.applyChanges();
 }
 
-bool NetConfAgent::fetchData(std::string & path, std::string & str) {
+bool NetConfAgent::fetchData(std::string const & path, std::string & str) {
     const char *cstr = path.c_str();
     auto data = _ses.getData(cstr);
     if (!data) // == nullopt?;
@@ -30,17 +32,19 @@ bool NetConfAgent::fetchData(std::string & path, std::string & str) {
     return true;
 }
 
-void NetConfAgent::subscribeForModelChanges(std::string & path) {
-    _ses.copyConfig(sysrepo::Datastore::Running, moduleName);
-    sysrepo::ModuleChangeCb changeCb = [] (sysrepo::Session _ses, auto, auto, auto, auto, auto) -> sysrepo::ErrorCode {
-            for(auto changes : _ses.getChanges())
+void NetConfAgent::subscribeForModelChanges(std::string const & path, MobileClient & mc) {
+    _ses.copyConfig(sysrepo::Datastore::Running, _moduleName);
+    sysrepo::ModuleChangeCb changeCb = [&mc] (sysrepo::Session _ses, auto, auto, auto, auto, auto) -> sysrepo::ErrorCode {
+            for (auto changes : _ses.getChanges())
             {
-                std::cout << "created: " << (changes.operation == sysrepo::ChangeOperation::Created) << std::endl;
-                std::cout << "modified: " << (changes.operation == sysrepo::ChangeOperation::Modified) << std::endl;
-                std::cout << std::string{changes.node.path()} << std::endl;
+                std::string changePath = std::string{changes.node.path()};
+                std::string value = "";
+                if (changes.node.schema().nodeType() == libyang::NodeType::Leaf) {
+                    value = std::string{changes.node.asTerm().valueStr()};
+                    mc.handleModuleChange(changePath, value);
+                }
             }
             return sysrepo::ErrorCode::Ok;
     };
-    _sub = _ses.onModuleChange(moduleName, changeCb, path.c_str(), 0, sysrepo::SubscribeOptions::DoneOnly);
-    //test: "/mobilenetwork:subscribers/subscriber[number='002']/incomingNumber"
+    _sub = _ses.onModuleChange(_moduleName, changeCb, path.c_str(), 0, sysrepo::SubscribeOptions::DoneOnly);
 }

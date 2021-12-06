@@ -1,4 +1,7 @@
-#include "NetConfAgent.hpp"
+# ifndef MOBILECLIENT_HPP
+# define MOBILECLIENT_HPP
+
+class NetConfAgent;
 
 enum class State {
     idle,
@@ -19,6 +22,9 @@ class MobileClient {
         MobileClient();
         void setName(std::string & name);
         bool Register(std::string & number);
+        void handleModuleChange(std::string & path, std::string & value);
+        bool call(std::string incomingNumber);
+        void answer();
     private:
         std::string makePath(std::string & value, Leaf type);
         std::string _name;
@@ -26,5 +32,6 @@ class MobileClient {
         std::string _incomingNumber;
         State _state;
         std::unique_ptr<NetConfAgent> _netConf;
-        const std::string pattern = "/mobilenetwork:subscribers/subscriber[number='";
 };
+
+#endif

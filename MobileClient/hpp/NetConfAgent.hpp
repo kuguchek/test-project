@@ -5,14 +5,15 @@
 #include <iostream>
 #include <optional>
 
+class MobileClient;
+
 class NetConfAgent {
     public:
         NetConfAgent();
-        void subscribeForModelChanges(std::string & path);
-        bool fetchData(std::string & path, std::string & str);
-        void changeData(std::string & path, std::string & value);
+        void subscribeForModelChanges(std::string const & path, MobileClient & mc);
+        bool fetchData(std::string const & path, std::string & str);
+        void changeData(std::string const & path, std::string const & value);
         void registerOperData();
-        const char *moduleName = "mobilenetwork";
     private:
         sysrepo::Connection _con;
         sysrepo::Session _ses;
