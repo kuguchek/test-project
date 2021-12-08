@@ -13,7 +13,9 @@ class NetConfAgent {
         void subscribeForModelChanges(std::string const & path, MobileClient & mc);
         bool fetchData(std::string const & path, std::string & str);
         void changeData(std::string const & path, std::string const & value);
+        void deleteData(std::string path);
         void registerOperData();
+        void closeSubscription();
     private:
         sysrepo::Connection _con;
         sysrepo::Session _ses;

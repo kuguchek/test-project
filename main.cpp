@@ -4,30 +4,26 @@
 #include "NetConfAgent.hpp"
 #include "MobileClient.hpp"
 
-bool unregister() {
-    std::cout << "unregistred!" << std::endl;
-    return true;
-}
+//bool unregister() {
+//    std::cout << "unregistred!" << std::endl;
+//    return true;
+//}
 
-void callEnd() {
+/*void callEnd() {
     std::cout << "end call?" << std::endl;
 }
 
 void regect() {
     std::cout << "regect?" << std::endl;
-}
+}*/
 
 void twoWordCommands(MobileClient & mc, std::string const & command, std::string & value) {
-    if (command == "register") {
-        if (mc.Register(value))
-            std::cout << "> number " << value << " registred succesfully!" << std::endl;
-    }
+    if (command == "register")
+        mc.Register(value);
     else if (command == "setName")
         mc.setName(value);
-    else if (command == "call") {
-        if(!mc.call(value))
-            std::cout << "> subscriber is unavailable for some reasons! can't call! " << value << std::endl;
-    }
+    else if (command == "call")
+        mc.call(value);
     else
         std::cout << "wrong command!" << std::endl;
 }
@@ -55,13 +51,13 @@ int main() {
             if (line == "register" || line == "setName" || line == "call")
                 std::cout << "wrong argument: 'command' 'arg'" << std::endl;
             else if (line == "unregister")
-                unregister();
+                mc.unregister();
             else if (line == "callEnd")
-                callEnd();
+                mc.callEnd();
             else if (line == "answer")
                 mc.answer();
             else if (line == "regect")
-                regect();
+                mc.regect();
             else if (line == "exit")
                 break;
             else
