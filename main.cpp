@@ -4,20 +4,7 @@
 #include "NetConfAgent.hpp"
 #include "MobileClient.hpp"
 
-//bool unregister() {
-//    std::cout << "unregistred!" << std::endl;
-//    return true;
-//}
-
-/*void callEnd() {
-    std::cout << "end call?" << std::endl;
-}
-
-void regect() {
-    std::cout << "regect?" << std::endl;
-}*/
-
-void twoWordCommands(MobileClient & mc, std::string const & command, std::string & value) {
+void twoWordCommands(mobilenetwork::MobileClient &mc, std::string const &command, std::string &value) {
     if (command == "register")
         mc.Register(value);
     else if (command == "setName")
@@ -32,7 +19,7 @@ int main() {
     std::string line;
     std::cout << "options: register 'number', unregister, setName 'name'," 
      << " call 'number', callEnd, answer, regect, exit" << std::endl;
-    MobileClient mc;
+    mobilenetwork::MobileClient mc;
     while (1) {
         getline(std::cin, line);
         size_t pos;

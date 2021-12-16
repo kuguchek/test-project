@@ -2,23 +2,39 @@
 #include "NetConfAgent.hpp"
 #include "Constants.hpp"
 
-MobileClient::MobileClient() : _state(State::idle) {
-    _netConf = std::make_unique<NetConfAgent>();
+namespace mobilenetwork {
+MobileClient::MobileClient() : MobileClient(std::make_unique<NetConfAgent>()) {
+    //_netConf = std::make_unique<NetConfAgent>();
 }
 
-void MobileClient::setName(std::string & name) {
+MobileClient::MobileClient(std::unique_ptr<INetConfAgent> ptr) : _netConf{std::move(ptr)} {
+    _state = State::idle;
+}
+
+void MobileClient::setName(std::string &name) {
     _name = name;
+    std::cout << redBold << "> " << _name << " - name aded!" << resetCol << std::endl;
 }
 
-bool MobileClient::Register(std::string & number) {
+std::string MobileClient::getName() {
+    return _name;
+}
+
+bool MobileClient::Register(std::string &number) {
     std::string str;
     std::string path = makePath(number, Leaf::number);
 
+    if (_name.empty()) {
+        std::cout << redBold << "set name ('setName' command) before registration!" << resetCol << std::endl;
+        return false;
+    }
     if (_netConf->fetchData(makePath(number, Leaf::number), str) == false) //no data on this path
     {
         _number = number;
         _netConf->changeData(path, _number);
         _netConf->subscribeForModelChanges(makePath(number, Leaf::subscriber), *this);
+        if (_name.empty() == false)
+            _netConf->registerOperData(makePath(number, Leaf::userName), *this);
         std::cout << redBold << "> " << number << " registred succesfully!" << resetCol << std::endl;
         return true;
     }
@@ -35,13 +51,14 @@ bool MobileClient::call(std::string incomingNumber) {
     }
     std::string str;
     if (_netConf->fetchData(makePath(incomingNumber, Leaf::number), str) == false) { //no such number
-        std::cout << redBold << "> no such number for call:"  << str << resetCol <<std::endl;
+        std::cout << redBold << "> no such number for call: " << incomingNumber << resetCol <<std::endl;
         return false;
     }
     else {
         std::string state;
         std::string statePath = makePath(incomingNumber, Leaf::state);
         _netConf->fetchData(statePath, state);
+        std::cout << "state " << state << std::endl;
         if (state == "idle")
         {
             _outgoingNumber = incomingNumber;
@@ -57,29 +74,37 @@ bool MobileClient::call(std::string incomingNumber) {
     return true;
 }
 
-void MobileClient::answer() {
+bool MobileClient::answer() {
     std::string value;
-    if (_incomingNumber.empty()) // answer only when you have incoming call
+    _netConf->fetchData(makePath(_number, Leaf::state), value);
+    if (value != enumStr[State::active] || (_incomingNumber.empty() == true)) {
         std::cout << redBold << "> there is no incoming call!" << resetCol << std::endl;
+        return false;
+    }
     else {
         _netConf->changeData(makePath(_number, Leaf::state), "busy");
         _netConf->changeData(makePath(_incomingNumber, Leaf::state), "busy");
     }
+    return true;
 }
 
-void MobileClient::regect() {
+bool MobileClient::regect() {
     std::string value;
-    if (_incomingNumber.empty()) // regect only when you have incoming call
+    _netConf->fetchData(makePath(_number, Leaf::state), value);
+    if (value != enumStr[State::active] || (_incomingNumber.empty() == true)) {
         std::cout << redBold << "> there is no incoming call!" << resetCol << std::endl;
+        return false;
+    }
     else {
         _netConf->changeData(makePath(_number, Leaf::incomingNumber), "");
         //_netConf->deleteData(makePath(_number, Leaf::incomingNumber));
         _netConf->changeData(makePath(_incomingNumber, Leaf::state), enumStr[State::idle]);
         _netConf->changeData(makePath(_number, Leaf::state), enumStr[State::idle]);
     }
+    return true;
 }
 
-void MobileClient::callEnd() { //if conversation
+bool MobileClient::callEnd() {
     if (_state == State::busy) {
         if (_incomingNumber.empty() == false) {//if it's incoming call
             _netConf->changeData(makePath(_number, Leaf::incomingNumber), "");
@@ -91,22 +116,28 @@ void MobileClient::callEnd() { //if conversation
         }
         _netConf->changeData(makePath(_number, Leaf::state), enumStr[State::idle]);
     }
-    else
+    else {
         std::cout << redBold << "> there is no call to end!" << resetCol << std::endl;
+        return false;
+    }
+    return true;
 }
 
-void MobileClient::unregister() {
+bool MobileClient::unregister() {
     if (_number.empty() == false) { //unregister only for registred
         _netConf->deleteData(makePath(_number, Leaf::subscriber));
         _netConf->closeSubscription();
         _number.clear();
         std::cout << redBold << "> unregistered!" << resetCol << std::endl;
     }
-    else
+    else {
         std::cout << redBold << "> can't unregister!" << resetCol << std::endl;
+        return false;
+    }
+    return true;
 }
 
-std::string MobileClient::makePath(std::string & value, Leaf type) {
+std::string MobileClient::makePath(std::string &value, Leaf type) {
     std::string end;
 
     switch(type) {
@@ -129,11 +160,13 @@ std::string MobileClient::makePath(std::string & value, Leaf type) {
     return (_pattern + value + end);
 }
 
-void MobileClient::handleModuleChange(std::string & path, std::string & value) {
+void MobileClient::handleModuleChange(std::string &path, std::string &value) {
     std::size_t pos, pos2;
     if ((pos = path.find("incomingNumber") != std::string::npos) && (value.empty() == false)) {
         _incomingNumber = value;
-        std::cout << redBold << "> incoming call from " << value << resetCol <<std::endl;
+        std::string name;
+        _netConf->fetchData(makePath(_incomingNumber, Leaf::userName), name);
+        std::cout << redBold << "> incoming call from " << value << ", name: " << name << resetCol <<std::endl;
     }
     else if ((pos2 = path.find("state") != std::string::npos)) {
         if (value == enumStr[State::busy]) {
@@ -147,7 +180,7 @@ void MobileClient::handleModuleChange(std::string & path, std::string & value) {
             _state = State::idle;
             if (_incomingNumber.empty() == false || _outgoingNumber.empty() == false) {
                 if (_incomingNumber.empty() == false) 
-                 _incomingNumber.clear();
+                    _incomingNumber.clear();
                 else //_outgoingNumber.empty() == false)
                     _outgoingNumber.clear();
                 std::cout << redBold << "> end of the call" << resetCol << std::endl;
@@ -156,4 +189,7 @@ void MobileClient::handleModuleChange(std::string & path, std::string & value) {
     }
     //std::cout << "path: " << path << std::endl;
     //std::cout << "value: " << value << std::endl;
+}
+
+MobileClient::~MobileClient() = default;
 }

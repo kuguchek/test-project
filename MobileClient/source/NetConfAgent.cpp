@@ -2,22 +2,21 @@
 #include "MobileClient.hpp"
 #include "Constants.hpp"
 
+namespace mobilenetwork{
 NetConfAgent::NetConfAgent() : _con(), _ses(_con.sessionStart()) { }
 
 void NetConfAgent::closeSubscription() {
     _sub = std::nullopt;
+    _subOper = std::nullopt;
 }
 
-void NetConfAgent::registerOperData() {
-        sysrepo::ErrorCode ret;
-        sysrepo::OperGetItemsCb operGetCb = [&] (sysrepo::Session _ses, auto, auto, auto, auto, auto, std::optional<libyang::DataNode>& parent) {
-            parent = _ses.getContext().newPath("/mobilenetwork:subscribers/subscriber[number='124']/userName", "name14");
-            std::cout << "has value: " << parent.has_value() << std::endl;
-            ret = sysrepo::ErrorCode::Ok;
-            return ret;
+void NetConfAgent::registerOperData(const std::string &path, MobileClient &mc) {
+        sysrepo::OperGetItemsCb operGetCb = [&, path] (sysrepo::Session ses, auto, auto, auto, auto, auto, std::optional<libyang::DataNode>& parent) {
+            std::string value = mc.getName();
+            parent = ses.getContext().newPath(path.c_str(), value.c_str());
+            return sysrepo::ErrorCode::Ok;;
     };
-    _sub = _ses.onOperGetItems(_moduleName.c_str(), operGetCb, "/mobilenetwork:*");
-    //_ses.switchDatastore(sysrepo::Datastore::Operational);
+    _subOper = _ses.onOperGetItems(_moduleName.c_str(), operGetCb, path.c_str());
 }
 
 void NetConfAgent::deleteData(std::string path) {
@@ -25,26 +24,34 @@ void NetConfAgent::deleteData(std::string path) {
     _ses.applyChanges();
 }
 
-void NetConfAgent::changeData(std::string const & path, std::string const & value) {
-    //const char *cpath = path.c_str();
-    //const char *cval = value.c_str();
+void NetConfAgent::changeData(std::string const &path, std::string const &value) {
     _ses.setItem(path.c_str(), value.c_str());
     _ses.applyChanges();
 }
 
-bool NetConfAgent::fetchData(std::string const & path, std::string & str) {
-    const char *cstr = path.c_str();
-    auto data = _ses.getData(cstr);
-    if (!data) // == nullopt?;
-        return false;
-    str = data->findPath(cstr).value().asTerm().valueStr();
+bool NetConfAgent::fetchData(std::string const &path, std::string &str) {
+    auto data = _ses.getData(path.c_str());
+    if (!data.has_value()) {
+        _ses.switchDatastore(sysrepo::Datastore::Operational);
+        auto data2 = _ses.getData(path.c_str());
+        if (!data2.has_value()) {
+            _ses.switchDatastore(sysrepo::Datastore::Running);
+            return false;
+        }
+        str = data2->findPath(path.c_str()).value().asTerm().valueStr();
+        _ses.switchDatastore(sysrepo::Datastore::Running);
+        std::cout << "fetch operational: " << str << std::endl;
+        std::cout << "path: " << path << std::endl;
+        return true;
+    }
+    str = data->findPath(path.c_str()).value().asTerm().valueStr();
+    std::cout << "fetchData(): " << str << std::endl;
     return true;
 }
 
-void NetConfAgent::subscribeForModelChanges(std::string const & path, MobileClient & mc) {
-    _ses.copyConfig(sysrepo::Datastore::Running, _moduleName.c_str());
-    sysrepo::ModuleChangeCb changeCb = [&mc] (sysrepo::Session _ses, auto, auto, auto, auto, auto) -> sysrepo::ErrorCode {
-            for (auto changes : _ses.getChanges())
+void NetConfAgent::subscribeForModelChanges(std::string const &path, MobileClient &mc) {
+    sysrepo::ModuleChangeCb changeCb = [&mc] (sysrepo::Session ses, auto, auto, auto, auto, auto) -> sysrepo::ErrorCode {
+            for (auto changes : ses.getChanges())
             {
                 if (changes.operation == sysrepo::ChangeOperation::Deleted)
                     std::cout << "subscribeForModelChanges() -> delete" << std::endl;
@@ -59,4 +66,7 @@ void NetConfAgent::subscribeForModelChanges(std::string const & path, MobileClie
             return sysrepo::ErrorCode::Ok;
     };
     _sub = _ses.onModuleChange(_moduleName.c_str(), changeCb, path.c_str(), 0, sysrepo::SubscribeOptions::DoneOnly);
+}
+
+NetConfAgent::~NetConfAgent() = default;
 }

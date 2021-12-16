@@ -1,64 +1,52 @@
-# ifndef NETCONFAGENT_HPP
-# define NETCONFAGENT_HPP
-#include <sysrepo-cpp/Session.hpp>
-#include <sysrepo-cpp/Connection.hpp>
-#include <iostream>
-#include <optional>
-#include "INetConfAgent.hpp"
+# ifndef INETCONFAGENT_HPP
+# define INETCONFAGENT_HPP
 
-//class MobileClient;
+#include <string>
+#include <memory>
+
 namespace mobilenetwork {
-class INetConfAgent;
+class MobileClient;
 
-class NetConfAgent : public INetConfAgent {
+class INetConfAgent {
     public:
-        /**
-        * @brief Constructor for NetConfAgent class.
-        */
-        NetConfAgent();      
         /**
         * @brief Subscribe for changes made in the specified module
         * @param[in] path Path to subscribe for
         * @param[in] mc Reference to object to handle changes in MobileClient class
         */
-        void subscribeForModelChanges(std::string const &path, MobileClient &mc) override;
+        virtual void subscribeForModelChanges(std::string const &path, MobileClient &mc) = 0;
         /**
         * @brief Get data at the given path(if node on given path has value)
         * @param[in] path Path to get data from
         * @param[out] str String representation of data
         * @return /true when there is data on specified path, /false otherwise.
         */
-        bool fetchData(std::string const &path, std::string &str) override; //first const
+        virtual bool fetchData(std::string const &path, std::string &str) = 0;
         /**
         * @brief Set or change value at the given path
         * @param[in] path Path of the element to be changed
         * @param[in] value Value of the element to be changed
         */
-        void changeData(std::string const &path, std::string const &value) override;
+        virtual void changeData(std::string const &path, std::string const &value) = 0;
         /**
         * @brief Delete value at the given path
         * @param[in] path Path of the element to be deleted.
         */
-        void deleteData(std::string path);
+        virtual void deleteData(std::string path) = 0;
         /**
         * @brief Register for providing operational data at the given path. 
         * @param[in] path Path to subscribe for
         * @param[in] mc Reference to object to get data from MobileClient class
         */
-        void registerOperData(const std::string &path, MobileClient &mc) override;
+        virtual void registerOperData(const std::string &path, MobileClient &mc) = 0;
         /**
         * @brief Delete subscribtion for module changes
         */
-        void closeSubscription() override;
+        virtual void closeSubscription() = 0;
         /**
-        * @brief Destructor of NetConfAgent class
+        * @brief Destructor of INetConfAgent class
         */
-        ~NetConfAgent();
-    private:
-        sysrepo::Connection _con;
-        sysrepo::Session _ses;
-        std::optional<sysrepo::Subscription> _sub;
-        std::optional<sysrepo::Subscription> _subOper;
+        virtual ~INetConfAgent() {};
 };
 }
 #endif
