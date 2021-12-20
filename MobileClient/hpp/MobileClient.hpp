@@ -46,7 +46,7 @@ class MobileClient {
         * @param[in] path Path of the changed value
         * @param[in] value Value of the changed element
         */
-        void handleModuleChange(std::string &path, std::string &value);
+        void handleModuleChange(const std::string &path, const std::string &value);
         /**
         * @brief Call to another (already registered) subscriber
         * @param[in] incomingNumber Number to call

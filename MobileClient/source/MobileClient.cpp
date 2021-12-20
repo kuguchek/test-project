@@ -75,9 +75,7 @@ bool MobileClient::call(std::string incomingNumber) {
 }
 
 bool MobileClient::answer() {
-    std::string value;
-    _netConf->fetchData(makePath(_number, Leaf::state), value);
-    if (value != enumStr[State::active] || (_incomingNumber.empty() == true)) {
+    if (_state != State::active || (_incomingNumber.empty() == true)) {
         std::cout << redBold << "> there is no incoming call!" << resetCol << std::endl;
         return false;
     }
@@ -89,9 +87,9 @@ bool MobileClient::answer() {
 }
 
 bool MobileClient::regect() {
-    std::string value;
-    _netConf->fetchData(makePath(_number, Leaf::state), value);
-    if (value != enumStr[State::active] || (_incomingNumber.empty() == true)) {
+    //std::string value;
+   // _netConf->fetchData(makePath(_number, Leaf::state), value);
+    if (_state != State::active || (_incomingNumber.empty() == true)) {
         std::cout << redBold << "> there is no incoming call!" << resetCol << std::endl;
         return false;
     }
@@ -160,7 +158,7 @@ std::string MobileClient::makePath(std::string &value, Leaf type) {
     return (_pattern + value + end);
 }
 
-void MobileClient::handleModuleChange(std::string &path, std::string &value) {
+void MobileClient::handleModuleChange(const std::string &path, const std::string &value) {
     std::size_t pos, pos2;
     if ((pos = path.find("incomingNumber") != std::string::npos) && (value.empty() == false)) {
         _incomingNumber = value;
