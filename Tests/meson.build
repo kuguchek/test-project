@@ -5,6 +5,6 @@ gtestdep = [dependency('gtest', main : true),
 mock = include_directories('Mock')
 
 exe = executable('testcase', 'Source/MobileClientTest.cpp',
-        include_directories : [inc, mock], dependencies : [gtestdep, libpcre, sysrepo, libyang], link_with : slib)
+        include_directories : [inc, mock], dependencies : [libdep, gtestdep, libpcre, sysrepo, libyang])
 
 test('MobileClientTest', exe)

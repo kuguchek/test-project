@@ -33,13 +33,13 @@ class MobileClient {
         * @brief Set subscriber's name 
         * @param[in] name Name to set
         */
-        void setName(std::string &name);
+        void setName(const std::string &name);
         /**
         * @brief Register a subscriber with given number
         * @param[in] number Subscriber's number 
         * @return /true if registrated succesfully, /false otherwise.
         */
-        bool Register(std::string &number);
+        bool Register(const std::string &number);
         /**
         * @brief Handle changes (subscribe for whitch was made on subscribeForModelChanges()),
         * depending on it path and changed value
@@ -53,7 +53,7 @@ class MobileClient {
         * @return /false if one of two subscribers is not registered or if one of two in 
         * busy or active state /true otherwise.
         */
-        bool call(std::string incomingNumber);
+        bool call(const std::string incomingNumber);
         /**
         * @brief Answer the incoming call, if subscriber have an incoming call from another  
         * subscriber, to start the conversation
@@ -81,11 +81,15 @@ class MobileClient {
         */
         bool unregister();
         /**
-        * @brief Get subscriber's name
+        * @brief Returns subscriber's name
         * @return Subscriber's name
         */
         std::string getName();
-         /**
+        /**
+        * @brief Delete all associated with subscriber data, before exit
+        */
+        void safeExit();
+        /**
         * @brief Destructor of MobileClient class
         */
         ~MobileClient();
@@ -97,12 +101,14 @@ class MobileClient {
         * @param[in] type Type of the leaf to whitch path is made
         * @return String with the path to the given leaf or presence container
         */
-        std::string makePath(std::string &value, Leaf type);
+        std::string makePath(const std::string &value, Leaf type);
         std::string _name;
         std::string _number;
         std::string _incomingNumber;
         std::string _outgoingNumber;
         State _state;
+        time_t _startTime;
+        time_t _endTime;
         std::unique_ptr<INetConfAgent> _netConf;
 };
 }

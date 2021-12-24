@@ -1,7 +1,6 @@
+#include <gtest/gtest.h>
 #include "MobileClient.hpp"
 #include "NetConfAgentMock.hpp"
-
-#include <gtest/gtest.h>
 #include "Constants.hpp"
 
 using testing::Return;
@@ -11,13 +10,11 @@ using testing::InSequence;
 using testing::SetArgReferee;
 using testing::DoAll;
 
-
-//"/mobilenetwork:subscribers/subscriber[number='5432']/userName"
 namespace {
-    const std::string pathPattern = "/mobilenetwork:subscribers/subscriber[number='";
+    const std::string pathPattern = "/commutator:subscribers/subscriber[number='";
     const std::string stateIdle = "idle";
-    std::string stateActive = "active";
-    std::string stateBusy = "busy";
+    const std::string stateActive = "active";
+    const std::string stateBusy = "busy";
     const std::string pathName = "']/userName";
     const std::string pathState = "']/state";
     const std::string pathIncoming = "']/incomingNumber";
@@ -28,18 +25,18 @@ namespace test {
 class MobileClientTest : public testing::Test {
     protected:
         void SetUp() override {
-            auto tmpMock = std::make_unique<StrictMock<NetConfAgentMock>>();
+            auto tmpMock = std::make_unique<StrictMock<mock::NetConfAgentMock>>();
             _mock = tmpMock.get();
             _cli = std::make_unique<mobilenetwork::MobileClient>(std::move(tmpMock));
         }
-        StrictMock <NetConfAgentMock> *_mock;
+        StrictMock <mock::NetConfAgentMock> *_mock;
         std::unique_ptr<mobilenetwork::MobileClient> _cli;
 };
 
 TEST_F(MobileClientTest, RegisterFail) 
 {
-    std::string number = "0124";
-    std::string name = "testname";
+    const std::string number = "0124";
+    const std::string name = "testname";
     const std::string numberPath = pathPattern + number + pathNumber;
 
     _cli->setName(name);
@@ -48,11 +45,17 @@ TEST_F(MobileClientTest, RegisterFail)
     EXPECT_FALSE(_cli->Register(number));
 }
 
+TEST_F(MobileClientTest, RegisterWithoutSetName) 
+{
+    const std::string number = "124";
+    EXPECT_FALSE(_cli->Register(number));
+}
+
 TEST_F(MobileClientTest, RegisterUnregisterTwoTimes)
 {
     InSequence s;
-    std::string number = "0456";
-    std::string name = "test";
+    const std::string number = "0456";
+    const std::string name = "test";
     const std::string numberPath = pathPattern + number + pathNumber;
     const std::string subscribePath = pathPattern + number + "']";
     const std::string namePath = pathPattern + number + pathName;
@@ -60,7 +63,7 @@ TEST_F(MobileClientTest, RegisterUnregisterTwoTimes)
     _cli->setName(name);
     EXPECT_CALL(*_mock, fetchData(numberPath,_))
         .WillOnce(Return (false));
-    EXPECT_CALL(*_mock, changeData(numberPath,number))
+    EXPECT_CALL(*_mock, changeData(numberPath,_))
         .Times(1);
     EXPECT_CALL(*_mock, subscribeForModelChanges(subscribePath,_))
         .Times(1);
@@ -83,9 +86,9 @@ TEST_F(MobileClientTest, CallBeforeRegister)
 TEST_F(MobileClientTest, CallSuccess)
 {
     InSequence s;
-    std::string number = "0456";
-    std::string name = "test";
-    std::string income = "0124";
+    const std::string number = "0456";
+    const std::string name = "test";
+    const std::string income = "0124";
     const std::string numberPath = pathPattern + number + pathNumber;
     const std::string subscribePath = pathPattern + number + "']";
     const std::string namePath = pathPattern + number + pathName;
@@ -97,7 +100,7 @@ TEST_F(MobileClientTest, CallSuccess)
     _cli->setName(name);
     EXPECT_CALL(*_mock, fetchData(numberPath,_))
         .WillOnce(Return (false));
-    EXPECT_CALL(*_mock, changeData(numberPath, number))
+    EXPECT_CALL(*_mock, changeData(numberPath,_))
         .Times(1);
     EXPECT_CALL(*_mock, subscribeForModelChanges(subscribePath,_))
         .Times(1);
@@ -119,9 +122,9 @@ TEST_F(MobileClientTest, CallSuccess)
 
 TEST_F(MobileClientTest, AnswerSuccess)
 {
-    std::string number = "0456";
-    std::string name = "test";
-    std::string income = "0321";
+    const std::string number = "0456";
+    const std::string name = "test";
+    const std::string income = "0321";
     const std::string numberPath = pathPattern + number + pathNumber;
     const std::string subscribePath = pathPattern + number + "']";
     const std::string namePath = pathPattern + number + pathName;
@@ -133,7 +136,7 @@ TEST_F(MobileClientTest, AnswerSuccess)
     _cli->setName(name);
     EXPECT_CALL(*_mock, fetchData(numberPath,_))
         .WillOnce(Return (false));
-    EXPECT_CALL(*_mock, changeData(numberPath, number))
+    EXPECT_CALL(*_mock, changeData(numberPath, _))
         .Times(1);
     EXPECT_CALL(*_mock, subscribeForModelChanges(subscribePath,_))
         .Times(1);
@@ -146,14 +149,15 @@ TEST_F(MobileClientTest, AnswerSuccess)
     _cli->handleModuleChange(incomePath, income);
     EXPECT_CALL(*_mock, changeData(statePath, stateBusy));
     EXPECT_CALL(*_mock, changeData(stateIncome, stateBusy));
+    EXPECT_CALL(*_mock, notifySysrepo(_));
     EXPECT_TRUE(_cli->answer());
 }
 
 TEST_F(MobileClientTest, RegectSuccess)
 {
-    std::string number = "0034";
-    std::string name = "name";
-    std::string income = "3400";
+    const std::string number = "0034";
+    const std::string name = "name";
+    const std::string income = "3400";
     const std::string numberPath = pathPattern + number + pathNumber;
     const std::string subscribePath = pathPattern + number + "']";
     const std::string namePath = pathPattern + number + pathName;
@@ -165,7 +169,7 @@ TEST_F(MobileClientTest, RegectSuccess)
     _cli->setName(name);
     EXPECT_CALL(*_mock, fetchData(numberPath,_))
         .WillOnce(Return (false));
-    EXPECT_CALL(*_mock, changeData(numberPath,number))
+    EXPECT_CALL(*_mock, changeData(numberPath, _))
         .Times(1);
     EXPECT_CALL(*_mock, subscribeForModelChanges(subscribePath,_))
         .Times(1);
@@ -184,9 +188,9 @@ TEST_F(MobileClientTest, RegectSuccess)
 
 TEST_F(MobileClientTest, CallEndIncomingTrue)
 {
-    std::string number = "0456";
-    std::string name = "test";
-    std::string income = "4321";
+    const std::string number = "0456";
+    const std::string name = "test";
+    const std::string income = "4321";
     const std::string numberPath = pathPattern + number + pathNumber;
     const std::string subscribePath = pathPattern + number + "']";
     const std::string namePath = pathPattern + number + pathName;
@@ -198,32 +202,33 @@ TEST_F(MobileClientTest, CallEndIncomingTrue)
     _cli->setName(name);
     EXPECT_CALL(*_mock, fetchData(numberPath,_))
         .WillOnce(Return (false));
-    EXPECT_CALL(*_mock, changeData(numberPath,number))
+    EXPECT_CALL(*_mock, changeData(numberPath, _))
         .Times(1);
     EXPECT_CALL(*_mock, subscribeForModelChanges(subscribePath,_))
         .Times(1);
     EXPECT_CALL(*_mock, registerOperData(namePath,_))
         .Times(1);
     EXPECT_TRUE(_cli->Register(number));
-    _cli->handleModuleChange(statePath, stateBusy);
     EXPECT_CALL(*_mock, fetchData(namePathIncome,_))
         .Times(1);
     _cli->handleModuleChange(incomePath, income);
+    _cli->handleModuleChange(statePath, stateBusy);
     EXPECT_CALL(*_mock, changeData(incomePath, ""))
         .Times(1);
     EXPECT_CALL(*_mock, changeData(stateIncome, stateIdle))
         .Times(1);
     EXPECT_CALL(*_mock, changeData(statePath, stateIdle))
         .Times(1);
+    EXPECT_CALL(*_mock, notifySysrepo(_)).Times(1);
     EXPECT_TRUE(_cli->callEnd());
 }
 
 TEST_F(MobileClientTest, CallCallEndOutgoing)
 {
     InSequence s;
-    std::string number = "0456";
-    std::string name = "test";
-    std::string income = "0124";
+    const std::string number = "0456";
+    const std::string name = "test";
+    const std::string income = "0124";
     const std::string numberPath = pathPattern + number + pathNumber;
     const std::string subscribePath = pathPattern + number + "']";
     const std::string namePath = pathPattern + number + pathName;
@@ -235,7 +240,7 @@ TEST_F(MobileClientTest, CallCallEndOutgoing)
     _cli->setName(name);
     EXPECT_CALL(*_mock, fetchData(numberPath,_))
         .WillOnce(Return (false));
-    EXPECT_CALL(*_mock, changeData(numberPath, number))
+    EXPECT_CALL(*_mock, changeData(numberPath, _))
         .Times(1);
     EXPECT_CALL(*_mock, subscribeForModelChanges(subscribePath,_))
         .Times(1);
@@ -261,22 +266,26 @@ TEST_F(MobileClientTest, CallCallEndOutgoing)
         .Times(1);
     EXPECT_CALL(*_mock, changeData(statePath, stateIdle))
         .Times(1);
+    EXPECT_CALL(*_mock, notifySysrepo(_)).Times(1);
     EXPECT_TRUE(_cli->callEnd());
 }
 
 TEST_F(MobileClientTest, SetName) 
 {
-    std::string name = "testname";
+    const std::string empty;
+    const std::string name = "testname";
     _cli->setName(name);
     EXPECT_EQ(name, _cli->getName());
+    _cli->setName(empty);
+    EXPECT_EQ(empty, _cli->getName());
 }
 
 TEST_F(MobileClientTest, NoSuchNumberCall) 
 {
     InSequence s;
-    std::string name = "name";
-    std::string number = "12";
-    std::string income = "123";
+    const std::string name = "name";
+    const std::string number = "12";
+    const std::string income = "123";
     const std::string numberPath = pathPattern + number + pathNumber;
     const std::string subscribePath = pathPattern + number + "']";
     const std::string namePath = pathPattern + number + pathName;
@@ -285,7 +294,7 @@ TEST_F(MobileClientTest, NoSuchNumberCall)
     _cli->setName(name);
     EXPECT_CALL(*_mock, fetchData(numberPath,_))
         .WillOnce(Return (false));
-    EXPECT_CALL(*_mock, changeData(numberPath,number))
+    EXPECT_CALL(*_mock, changeData(numberPath, _))
         .Times(1);
     EXPECT_CALL(*_mock, subscribeForModelChanges(subscribePath,_))
         .Times(1);
@@ -299,8 +308,8 @@ TEST_F(MobileClientTest, NoSuchNumberCall)
 
 TEST_F(MobileClientTest, AnswerRegectEndWithoutIncoming)
 {
-    std::string name = "name";
-    std::string number = "12";
+    const std::string name = "name";
+    const std::string number = "12";
     const std::string numberPath = pathPattern + number + pathNumber;
     const std::string subscribePath = pathPattern + number + "']";
     const std::string namePath = pathPattern + number + pathName;
@@ -308,7 +317,7 @@ TEST_F(MobileClientTest, AnswerRegectEndWithoutIncoming)
     _cli->setName(name);
     EXPECT_CALL(*_mock, fetchData(numberPath,_))
         .WillOnce(Return (false));
-    EXPECT_CALL(*_mock, changeData(numberPath,number))
+    EXPECT_CALL(*_mock, changeData(numberPath,_))
         .Times(1);
     EXPECT_CALL(*_mock, subscribeForModelChanges(subscribePath,_))
         .Times(1);
@@ -322,8 +331,8 @@ TEST_F(MobileClientTest, AnswerRegectEndWithoutIncoming)
 
 TEST_F(MobileClientTest, CallSubscriberBusy)
 {
-    std::string number = "342";
-    std::string name = "nametest";
+    const std::string number = "342";
+    const std::string name = "nametest";
     const std::string income = "0032";
     const std::string numberPath = pathPattern + number + pathNumber;
     const std::string subscribePath = pathPattern + number + "']";
@@ -334,7 +343,7 @@ TEST_F(MobileClientTest, CallSubscriberBusy)
     _cli->setName(name);
     EXPECT_CALL(*_mock, fetchData(numberPath,_))
         .WillOnce(Return (false));
-    EXPECT_CALL(*_mock, changeData(numberPath, number))
+    EXPECT_CALL(*_mock, changeData(numberPath,_))
         .Times(1);
     EXPECT_CALL(*_mock, subscribeForModelChanges(subscribePath,_))
         .Times(1);

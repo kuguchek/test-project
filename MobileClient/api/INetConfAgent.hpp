@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <map>
 
 namespace mobilenetwork {
 class MobileClient;
@@ -43,6 +44,12 @@ class INetConfAgent {
         * @brief Delete subscribtion for module changes
         */
         virtual void closeSubscription() = 0;
+        /**
+        * @brief Send notification to Sysrepo about start or end of the call
+        * @param[in] map Map of pairs of pathes and values, to fill the 
+        * notification about start of the call, subscribers and duration (when cal end)
+        */
+        virtual void notifySysrepo(std::map<std::string, std::string> map) = 0;
         /**
         * @brief Destructor of INetConfAgent class
         */

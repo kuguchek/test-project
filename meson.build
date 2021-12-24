@@ -7,4 +7,4 @@ libyang = dependency ('libyang-cpp', required : true)
 subdir('MobileClient')
 subdir('Tests')
 
-executable('network', 'main.cpp', include_directories : inc, dependencies : [libpcre, sysrepo, libyang], link_with : slib)
+executable('network', 'main.cpp', include_directories : inc, dependencies : [libdep, libpcre, sysrepo, libyang])

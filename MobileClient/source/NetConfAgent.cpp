@@ -1,3 +1,4 @@
+#include <map>
 #include "NetConfAgent.hpp"
 #include "MobileClient.hpp"
 #include "Constants.hpp"
@@ -19,17 +20,17 @@ void NetConfAgent::registerOperData(const std::string &path, MobileClient &mc) {
     _subOper = _ses.onOperGetItems(_moduleName.c_str(), operGetCb, path.c_str());
 }
 
-void NetConfAgent::deleteData(std::string path) {
+void NetConfAgent::deleteData(const std::string path) {
     _ses.deleteItem(path.c_str());
     _ses.applyChanges();
 }
 
-void NetConfAgent::changeData(std::string const &path, std::string const &value) {
+void NetConfAgent::changeData(const std::string &path, const std::string &value) {
     _ses.setItem(path.c_str(), value.c_str());
     _ses.applyChanges();
 }
 
-bool NetConfAgent::fetchData(std::string const &path, std::string &str) {
+bool NetConfAgent::fetchData(const std::string &path, std::string &str) {
     auto data = _ses.getData(path.c_str());
     if (!data.has_value()) {
         _ses.switchDatastore(sysrepo::Datastore::Operational);
@@ -40,25 +41,28 @@ bool NetConfAgent::fetchData(std::string const &path, std::string &str) {
         }
         str = data2->findPath(path.c_str()).value().asTerm().valueStr();
         _ses.switchDatastore(sysrepo::Datastore::Running);
-        std::cout << "fetch operational: " << str << std::endl;
-        std::cout << "path: " << path << std::endl;
         return true;
     }
     str = data->findPath(path.c_str()).value().asTerm().valueStr();
-    std::cout << "fetchData(): " << str << std::endl;
     return true;
 }
 
-void NetConfAgent::subscribeForModelChanges(std::string const &path, MobileClient &mc) {
+void NetConfAgent::notifySysrepo(std::map<std::string, std::string> map) {
+    auto notification = _ses.getContext().newPath(notificationPath.c_str());
+    for (auto & m : map) {
+        notification.newPath((m.first).c_str(), (m.second).c_str());
+    }
+    _ses.sendNotification(notification, sysrepo::Wait::Yes);
+}
+
+void NetConfAgent::subscribeForModelChanges(const std::string &path, MobileClient &mc) {
     sysrepo::ModuleChangeCb changeCb = [&mc] (sysrepo::Session ses, auto, auto, auto, auto, auto) -> sysrepo::ErrorCode {
             for (auto changes : ses.getChanges())
             {
-                if (changes.operation == sysrepo::ChangeOperation::Deleted)
-                    std::cout << "subscribeForModelChanges() -> delete" << std::endl;
                 std::string changePath = std::string{changes.node.path()};
-                std::cout << "on path: " << changePath << std::endl;
                 std::string value = "";
-                if (changes.node.schema().nodeType() == libyang::NodeType::Leaf) {
+                if (changes.node.schema().nodeType() == libyang::NodeType::Leaf &&
+                            changes.operation != sysrepo::ChangeOperation::Deleted) {
                     value = std::string{changes.node.asTerm().valueStr()};
                     mc.handleModuleChange(changePath, value);
                 }
